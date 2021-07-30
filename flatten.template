@@ -1,0 +1,39 @@
+// Ensure that at the deepest level, there are no more child modules
+module "assert_no_more_children" {
+  source        = "Invicton-Labs/assertion/null"
+  version       = "0.2.1"
+  condition     = length(local.final_child.child_modules) == 0
+  error_message = "Too many module levels: the Invicton-Labs/get-state/null module does not support states that have modules more than ${child_levels} levels deep."
+}
+
+locals {
+  final_child = local.child_${child_levels}
+  child_1 = {
+    resources = [
+      for resource in lookup(local.root_module, "resources", []) :
+      {
+        module_address = ""
+        resource       = resource
+      }
+    ]
+    child_modules = lookup(local.root_module, "child_modules", [])
+  }
+%{ for i in range(2, child_levels + 1) }
+  child_${i} = {
+    resources = concat(local.child_${i - 1}.resources, [
+      for module in local.child_${i - 1}.child_modules :
+      [
+        for resource in lookup(module, "resources", []) :
+        {
+          module_address = module.address
+          resource       = resource
+        }
+      ]
+    ]...)
+    child_modules = concat([], [
+      for module in local.child_${i - 1}.child_modules :
+      lookup(module, "child_modules", [])
+    ]...)
+  }%{ endfor ~}
+  
+}
