@@ -3,7 +3,7 @@ Retrieves the current Terraform state (as it is during the plan step). The outpu
 
 You can also set the `working_dir` input parameter to the root directory of a *different* Terraform configuration. As long as proper credentials are set for that configuration without needing command-line arguments, it will be able to load the state file for that configuration.
 
-This module is known to work with `s3` and `local` backends (for `local` on Windows, you have to use the `-lock=false` flag for `terraform plan` and `terraform apply`). It *should* work with all other backends, but it has not been tested.
+This module is known to work with `s3` and `local` backends (for a `local` backend on Windows, you have to use the `-lock=false` flag for `terraform plan` and `terraform apply`). It *should* work with all other backends, but it has not been tested.
 
 Usage:
 ```
