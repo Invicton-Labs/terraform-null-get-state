@@ -40,7 +40,7 @@ locals {
   resources = [
     for resource in local.final_child.resources :
     merge({
-      address  = "${resource.module_address}${resource.module_address != "" ? "." : ""}${resource.resource.type}.${resource.resource.name}"
+      address  = "${resource.module_address}${resource.module_address != "" ? "." : ""}${resource.resource.mode == "data" ? "data." : ""}${resource.resource.type}.${resource.resource.name}"
       mode     = resource.resource.mode,
       type     = resource.resource.type,
       name     = resource.resource.name,

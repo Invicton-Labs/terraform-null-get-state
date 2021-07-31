@@ -131,7 +131,7 @@ Apply complete! Resources: 0 added, 0 changed, 0 destroyed.
 Outputs:
 
 state_datas = {
-  "local_file.data_file" = {
+  "data.local_file.data_file" = {
     "address" = "local_file.data_file"
     "instances" = [
       {
