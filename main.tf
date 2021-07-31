@@ -39,24 +39,22 @@ locals {
   root_module = lookup(local.values, "root_module", {})
   resources = [
     for resource in local.final_child.resources :
-    merge(resource.module_address != "" ? {
-      module = resource.module_address
-      } : {},
-      {
-        address  = "${resource.module_address}${resource.module_address != "" ? "." : ""}${resource.resource.type}.${resource.resource.name}"
-        mode     = resource.resource.mode,
-        type     = resource.resource.type,
-        name     = resource.resource.name,
-        provider = resource.resource.provider_name
-        instance = merge({
-          attributes = resource.resource.values
-          },
-          lookup(resource.resource, "index", null) != null ? { index_key = resource.resource.index } : {},
-          {
-            for k, v in resource.resource :
-            k => v
-            if !contains(["address", "index", "mode", "type", "name", "provider_name", "values"], k)
-        })
+    merge({
+      address  = "${resource.module_address}${resource.module_address != "" ? "." : ""}${resource.resource.type}.${resource.resource.name}"
+      mode     = resource.resource.mode,
+      type     = resource.resource.type,
+      name     = resource.resource.name,
+      module   = resource.module_address,
+      provider = resource.resource.provider_name
+      instance = merge({
+        attributes = resource.resource.values
+        },
+        lookup(resource.resource, "index", null) != null ? { index_key = resource.resource.index } : {},
+        {
+          for k, v in resource.resource :
+          k => v
+          if !contains(["address", "index", "mode", "type", "name", "provider_name", "values"], k)
+      })
     })
   ]
   resource_addresses = distinct([
@@ -67,17 +65,13 @@ locals {
     for address in local.resource_addresses :
     address => [
       for resource in local.resources :
-      {
-        for k, v in resource :
-        k => v
-        if k != "address"
-      }
+      resource
       if resource.address == address
     ]
   }
-  resources_instances_merged = [
+  resources_instances_merged = {
     for address, resource_set in local.resource_sets :
-    merge({
+    address => merge({
       for k, v in resource_set[0] :
       k => v
       if k != "instance"
@@ -88,15 +82,15 @@ locals {
           resource.instance
         ]
     })
-  ]
-  resources_only = [
-    for resource in local.resources_instances_merged :
-    resource
+  }
+  resources_only = {
+    for address, resource in local.resources_instances_merged :
+    address => resource
     if resource.mode == "managed"
-  ]
-  data_only = [
-    for resource in local.resources_instances_merged :
-    resource
+  }
+  data_only = {
+    for address, resource in local.resources_instances_merged :
+    address => resource
     if resource.mode == "data"
-  ]
+  }
 }

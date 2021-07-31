@@ -1,5 +1,5 @@
 output "resources_and_datas" {
-  description = "A list of all resources and data sources in the state."
+  description = "A map of all resources and data sources in the state, where keys are fully qualified addresses (`{module_path}.{resource_type}.{resource_name}`) and values contain the resource/data information."
   depends_on = [
     module.assert_error_is_not_found,
     module.assert_error_is_locked,
@@ -9,7 +9,7 @@ output "resources_and_datas" {
 }
 
 output "resources" {
-  description = "A list of all resources in the state."
+  description = "A map of all resources in the state, where keys are fully qualified addresses (`{module_path}.{resource_type}.{resource_name}`) and values contain the resource information."
   depends_on = [
     module.assert_error_is_not_found,
     module.assert_error_is_locked,
@@ -19,7 +19,7 @@ output "resources" {
 }
 
 output "datas" {
-  description = "A list of all data sources in the state."
+  description = "A map of all data sources in the state, where keys are fully qualified addresses (`{module_path}.{resource_type}.{resource_name}`) and values contain the data information."
   depends_on = [
     module.assert_error_is_not_found,
     module.assert_error_is_locked,

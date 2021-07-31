@@ -1,5 +1,5 @@
 # Terraform Get State
-Retrieves the current Terraform state (as it is during the plan step). The output format is intended to match the `terraform.tfstate` file as closely as possible.
+Retrieves the current Terraform state (as it is during the plan step). The output format is intended to match the `terraform.tfstate` file as closely as possible, with the exception that it uses maps (with keys being fully qualified addresses) instead of lists of resources/datas.
 
 You can also set the `working_dir` input parameter to the root directory of a *different* Terraform configuration. As long as proper credentials are set for that configuration without needing command-line arguments, it will be able to load the state file for that configuration.
 
@@ -96,8 +96,8 @@ Terraform will perform the following actions:
 Plan: 5 to add, 0 to change, 0 to destroy.
 
 Changes to Outputs:
-  + state_datas     = []
-  + state_resources = []
+  + state_datas     = {}
+  + state_resources = {}
 
 Do you want to perform these actions?
   Terraform will perform the actions described above.
@@ -105,23 +105,23 @@ Do you want to perform these actions?
 
   Enter a value: yes
 
-random_uuid.resource_rand_count[0]: Creating...
-random_id.resource_rand_for_each["key1"]: Creating...
 random_uuid.resource_rand_count[1]: Creating...
 random_string.resource_rand: Creating...
+random_id.resource_rand_for_each["key1"]: Creating...
 random_id.resource_rand_for_each["key2"]: Creating...
-random_uuid.resource_rand_count[0]: Creation complete after 0s [id=6c9dfad7-08e4-f54b-6b5b-1f3aef7ddfe7]
-random_uuid.resource_rand_count[1]: Creation complete after 0s [id=0b66d6fa-d106-bde0-ab30-7d5a73bc16c8]
-random_id.resource_rand_for_each["key2"]: Creation complete after 0s [id=n8bkNYwm-bw]
-random_string.resource_rand: Creation complete after 0s [id=oiTO:[f-]
-random_id.resource_rand_for_each["key1"]: Creation complete after 0s [id=ems3kAV2IVU]
+random_uuid.resource_rand_count[1]: Creation complete after 0s [id=493c6c68-14f9-9c0e-bf43-156a2591ed9d]
+random_uuid.resource_rand_count[0]: Creating...
+random_string.resource_rand: Creation complete after 0s [id=t5joR$sG]
+random_id.resource_rand_for_each["key2"]: Creation complete after 0s [id=Rk1tXjzzq_Q]
+random_id.resource_rand_for_each["key1"]: Creation complete after 0s [id=bVVJ7FfWJF4]
+random_uuid.resource_rand_count[0]: Creation complete after 0s [id=d1414899-155e-10a4-3eb0-a8f93ff25d84]
 
 Apply complete! Resources: 5 added, 0 changed, 0 destroyed.
 
 Outputs:
 
-state_datas = []
-state_resources = []
+state_datas = {}
+state_resources = {}
 ```
 
 Second `terraform apply` run (no changes to the configuration, but datas/resources from the first run are now in the state):
@@ -130,40 +130,45 @@ Apply complete! Resources: 0 added, 0 changed, 0 destroyed.
 
 Outputs:
 
-state_datas = [
-  {
+state_datas = {
+  "local_file.data_file" = {
+    "address" = "local_file.data_file"
     "instances" = [
       {
         "attributes" = {
           "content" = <<-EOT
-          hello
-          world
+          Hello
+          World!
           EOT
-          "content_base64" = "aGVsbG8NCndvcmxk"
+          "content_base64" = "SGVsbG8NCldvcmxkIQ=="
           "filename" = "./hello.txt"
-          "id" = "d07cff009c449bfdf131d865e1dc4413256e5f52"
+          "id" = "aa50975ddb392d89ed95a840bd8036e3d350a120"
         }
         "schema_version" = 0
         "sensitive_values" = {}
       },
     ]
     "mode" = "data"
+    "module" = ""
     "name" = "data_file"
     "provider" = "registry.terraform.io/hashicorp/local"
     "type" = "local_file"
-  },
-]
-state_resources = [
-  {
+  }
+  ...
+}
+
+state_resources = {
+  "random_id.resource_rand_for_each" = {
+    "address" = "random_id.resource_rand_for_each"
     "instances" = [
       {
         "attributes" = {
-          "b64_std" = "ems3kAV2IVU="
-          "b64_url" = "ems3kAV2IVU"
+          "b64_std" = "bVVJ7FfWJF4="
+          "b64_url" = "bVVJ7FfWJF4"
           "byte_length" = 8
-          "dec" = "8821205386841694549"
-          "hex" = "7a6b379005762155"
-          "id" = "ems3kAV2IVU"
+          "dec" = "7878284402589312094"
+          "hex" = "6d5549ec57d6245e"
+          "id" = "bVVJ7FfWJF4"
           "keepers" = null
           "prefix" = null
         }
@@ -173,12 +178,12 @@ state_resources = [
       },
       {
         "attributes" = {
-          "b64_std" = "n8bkNYwm+bw="
-          "b64_url" = "n8bkNYwm-bw"
+          "b64_std" = "Rk1tXjzzq/Q="
+          "b64_url" = "Rk1tXjzzq_Q"
           "byte_length" = 8
-          "dec" = "11513140416055015868"
-          "hex" = "9fc6e4358c26f9bc"
-          "id" = "n8bkNYwm-bw"
+          "dec" = "5065825407378631668"
+          "hex" = "464d6d5e3cf3abf4"
+          "id" = "Rk1tXjzzq_Q"
           "keepers" = null
           "prefix" = null
         }
@@ -188,15 +193,17 @@ state_resources = [
       },
     ]
     "mode" = "managed"
+    "module" = ""
     "name" = "resource_rand_for_each"
     "provider" = "registry.terraform.io/hashicorp/random"
     "type" = "random_id"
-  },
-  {
+  }
+  "random_string.resource_rand" = {
+    "address" = "random_string.resource_rand"
     "instances" = [
       {
         "attributes" = {
-          "id" = "oiTO:[f-"
+          "id" = "t5joR$sG"
           "keepers" = null
           "length" = 8
           "lower" = true
@@ -206,7 +213,7 @@ state_resources = [
           "min_upper" = 0
           "number" = true
           "override_special" = null
-          "result" = "oiTO:[f-"
+          "result" = "t5joR$sG"
           "special" = true
           "upper" = true
         }
@@ -215,17 +222,19 @@ state_resources = [
       },
     ]
     "mode" = "managed"
+    "module" = ""
     "name" = "resource_rand"
     "provider" = "registry.terraform.io/hashicorp/random"
     "type" = "random_string"
-  },
-  {
+  }
+  "random_uuid.resource_rand_count" = {
+    "address" = "random_uuid.resource_rand_count"
     "instances" = [
       {
         "attributes" = {
-          "id" = "6c9dfad7-08e4-f54b-6b5b-1f3aef7ddfe7"
+          "id" = "d1414899-155e-10a4-3eb0-a8f93ff25d84"
           "keepers" = null
-          "result" = "6c9dfad7-08e4-f54b-6b5b-1f3aef7ddfe7"
+          "result" = "d1414899-155e-10a4-3eb0-a8f93ff25d84"
         }
         "index_key" = 0
         "schema_version" = 0
@@ -233,9 +242,9 @@ state_resources = [
       },
       {
         "attributes" = {
-          "id" = "0b66d6fa-d106-bde0-ab30-7d5a73bc16c8"
+          "id" = "493c6c68-14f9-9c0e-bf43-156a2591ed9d"
           "keepers" = null
-          "result" = "0b66d6fa-d106-bde0-ab30-7d5a73bc16c8"
+          "result" = "493c6c68-14f9-9c0e-bf43-156a2591ed9d"
         }
         "index_key" = 1
         "schema_version" = 0
@@ -243,9 +252,10 @@ state_resources = [
       },
     ]
     "mode" = "managed"
+    "module" = ""
     "name" = "resource_rand_count"
     "provider" = "registry.terraform.io/hashicorp/random"
     "type" = "random_uuid"
-  },
-]
+  }
+}
 ```
