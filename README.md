@@ -27,8 +27,15 @@ resource "random_id" "resource_rand_for_each" {
     byte_length = 8
 }
 
-module "get-state" {
+module "get_state" {
     source = "Invicton-Labs/get-state/null
+}
+
+output "state_resources" {
+  value = module.get_state.resources
+}
+output "state_datas" {
+  value = module.get_state.datas
 }
 ```
 
