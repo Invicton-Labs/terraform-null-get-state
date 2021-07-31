@@ -159,7 +159,7 @@ state_datas = {
 
 state_resources = {
   "random_id.resource_rand_for_each" = {
-    "address" = "random_id.resource_rand_for_each"
+    "address" = "data.random_id.resource_rand_for_each"
     "instances" = [
       {
         "attributes" = {
