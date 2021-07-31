@@ -132,7 +132,7 @@ Outputs:
 
 state_datas = {
   "data.local_file.data_file" = {
-    "address" = "local_file.data_file"
+    "address" = "data.local_file.data_file"
     "instances" = [
       {
         "attributes" = {
@@ -159,7 +159,7 @@ state_datas = {
 
 state_resources = {
   "random_id.resource_rand_for_each" = {
-    "address" = "data.random_id.resource_rand_for_each"
+    "address" = "random_id.resource_rand_for_each"
     "instances" = [
       {
         "attributes" = {
