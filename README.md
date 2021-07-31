@@ -34,6 +34,7 @@ module "get_state" {
 output "state_resources" {
   value = module.get_state.resources
 }
+
 output "state_datas" {
   value = module.get_state.datas
 }
