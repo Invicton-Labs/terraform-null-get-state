@@ -29,7 +29,7 @@ module "assert_error_is_locked" {
 
 locals {
   // Decode the state, but wait for the assertion checks to be done and only use the real output if it was a 0 exit code (succeeded in loading the state)
-  state_decoded = module.assert_error_is_not_found.checked && module.assert_error_is_locked.checked && module.state.exitstatus == 0 ? jsondecode(trimspace(module.state.stdout)) : jsondecode(trimspace(module.state.stdout))
+  state_decoded = module.assert_error_is_not_found.checked && module.assert_error_is_locked.checked && module.state.exitstatus == 0 ? jsondecode(trimspace(module.state.stdout == "" ? "{}" : module.state.stdout)) : jsondecode("{}")
   // Merge it with an object that has fields of different types, so it forces it to be an object type, not a map type
   state_object = merge(local.state_decoded, {
     __conversion_field_string = ""
